@@ -98,3 +98,11 @@ icon, so it installs like an app and opens full screen without browser chrome:
 
 `.github/workflows/apps.yml` builds the site on every push to `main` and publishes it on GitHub
 Pages (one-time setup: Settings → Pages → Source: "GitHub Actions").
+
+## Phone layout
+
+Windows narrower than 600 CSS pixels (phones in portrait) get a compact layout: a 20 % larger
+interface, a swipeable tab strip, a short title bar (Search is an icon; AutoSave, Discord, the
+account button and the Share / Editing / Comments buttons are left out, and stay reachable through
+File and Search), a short status bar, and the document in Web Layout reflowed to the screen width.
+iPads and computers keep the full layout. See `theme::is_compact` in `crates/ui-egui`.

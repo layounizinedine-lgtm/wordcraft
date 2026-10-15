@@ -637,6 +637,26 @@ pub fn c32(c: wordcraft_doc::Rgb) -> Color32 {
     Color32::from_rgb(c.0, c.1, c.2)
 }
 
+/// Phone layout: the window is narrower than this many points (CSS pixels on the web). iPad and
+/// desktop windows are wider, so they keep the full layout.
+const PHONE_MAX_WIDTH: f32 = 600.0;
+/// Interface scale added on a phone, for finger-sized controls.
+pub const PHONE_ZOOM: f32 = 1.2;
+
+/// Decides once per frame whether the window is phone-sized (before the zoom is applied) and keeps
+/// the answer for [`is_compact`]. A window reporting no width (headless tests) is never a phone.
+pub fn update_compact(ctx: &egui::Context) -> bool {
+    let width = ctx.content_rect().width() * ctx.zoom_factor();
+    let compact = width > 0.0 && width < PHONE_MAX_WIDTH;
+    ctx.data_mut(|d| d.insert_temp(egui::Id::new("wordcraft_compact"), compact));
+    compact
+}
+
+/// Whether the phone layout is on (see [`update_compact`]).
+pub fn is_compact(ctx: &egui::Context) -> bool {
+    ctx.data(|d| d.get_temp::<bool>(egui::Id::new("wordcraft_compact"))).unwrap_or(false)
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeSet;

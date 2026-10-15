@@ -400,6 +400,8 @@ pub struct WordApp {
     system_animations: Option<bool>,
     /// Whether egui's own animations were last switched on or off ([`theme::apply_animations`]).
     applied_animations: Option<bool>,
+    /// The phone layout has fitted the page to the screen width (redone after leaving and re-entering it).
+    phone_fitted: bool,
     pub frame_ms: f64,
     /// The window title last sent; a viewport command schedules a repaint, so only send changes.
     sent_title: String,
@@ -495,6 +497,7 @@ impl WordApp {
             applied_editing: None,
             system_animations: None,
             applied_animations: None,
+            phone_fitted: false,
             frame_ms: 0.0,
             sent_title: String::new(),
             quit_requested: false,
@@ -1345,9 +1348,25 @@ impl WordApp {
         // Interface size (#475): egui's zoom factor multiplies the display scale the system reports
         // (native pixels per point), so it adds to it rather than replacing it. Keyboard zoom is
         // off (above), so nothing else changes the factor; `set_zoom_factor` repaints only on change.
-        let zoom = self.ui.interface_size.zoom_factor();
+        let phone = theme::update_compact(ctx);
+        let zoom = self.ui.interface_size.zoom_factor() * if phone { theme::PHONE_ZOOM } else { 1.0 };
         if ctx.zoom_factor() != zoom {
             ctx.set_zoom_factor(zoom);
+        }
+        // A phone reads the text reflowed to the screen width (Web Layout), not a shrunken page:
+        // the page is as wide as the screen minus the canvas gaps, at 100 %.
+        if phone != self.phone_fitted {
+            self.phone_fitted = phone;
+            if phone {
+                let _ = self.run("view.webLayout", json!({}));
+                let _ = self.run("view.zoom", json!({"value": 100}));
+            }
+        }
+        if phone && self.session.view.mode == wordcraft_layout::ViewMode::Web {
+            let width = ((ctx.content_rect().width() - 2.0 * canvas::GAP - 14.0) / canvas::PX_PER_PT).round().clamp(144.0, 800.0);
+            if (self.session.view.web_width - width).abs() > 0.5 {
+                self.session.view.web_width = width;
+            }
         }
         // Animation effects: the host is asked every frame what the system says (it answers from
         // memory), so a change made in the system's settings is followed without a restart.
