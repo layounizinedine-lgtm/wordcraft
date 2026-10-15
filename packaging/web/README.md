@@ -86,3 +86,15 @@ WordCraft renders with wgpu. It uses **WebGPU** when the browser has it and fall
 For example: `<iframe src="https://example.com/wordcraft/?webgl" ...>`.
 
 A browser with neither WebGPU nor WebGL2 gets a message in place of the app.
+
+## Install on a phone, tablet or desktop
+
+The page ships a web app manifest (`apps/wordcraft-web/manifest.webmanifest`) with the WordCraft
+icon, so it installs like an app and opens full screen without browser chrome:
+
+- **iPhone / iPad (Safari):** Share → **Add to Home Screen**.
+- **Android (Chrome):** menu → **Install app**.
+- **Mac / PC (Chrome, Edge):** the install icon in the address bar; Safari on macOS: File → **Add to Dock**.
+
+`.github/workflows/apps.yml` builds the site on every push to `main` and publishes it on GitHub
+Pages (one-time setup: Settings → Pages → Source: "GitHub Actions").
