@@ -86,3 +86,23 @@ WordCraft renders with wgpu. It uses **WebGPU** when the browser has it and fall
 For example: `<iframe src="https://example.com/wordcraft/?webgl" ...>`.
 
 A browser with neither WebGPU nor WebGL2 gets a message in place of the app.
+
+## Install on a phone, tablet or desktop
+
+The page ships a web app manifest (`apps/wordcraft-web/manifest.webmanifest`) with the WordCraft
+icon, so it installs like an app and opens full screen without browser chrome:
+
+- **iPhone / iPad (Safari):** Share → **Add to Home Screen**.
+- **Android (Chrome):** menu → **Install app**.
+- **Mac / PC (Chrome, Edge):** the install icon in the address bar; Safari on macOS: File → **Add to Dock**.
+
+`.github/workflows/apps.yml` builds the site on every push to `main` and publishes it on GitHub
+Pages (one-time setup: Settings → Pages → Source: "GitHub Actions").
+
+## Phone layout
+
+Windows narrower than 600 CSS pixels (phones in portrait) get a compact layout: a 20 % larger
+interface, a swipeable tab strip, a short title bar (Search is an icon; AutoSave, Discord, the
+account button and the Share / Editing / Comments buttons are left out, and stay reachable through
+File and Search), a short status bar, and the document in Web Layout reflowed to the screen width.
+iPads and computers keep the full layout. See `theme::is_compact` in `crates/ui-egui`.

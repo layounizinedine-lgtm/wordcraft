@@ -1,0 +1,16 @@
+{
+  "name": "WordCraft",
+  "short_name": "WordCraft",
+  "description": "Open-source word processor",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e6e6e6",
+  "theme_color": "#2b579a",
+  "icons": [
+    { "src": "hicolor/128x128/apps/ai.storyteller.wordcraft.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "hicolor/256x256/apps/ai.storyteller.wordcraft.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "hicolor/512x512/apps/ai.storyteller.wordcraft.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

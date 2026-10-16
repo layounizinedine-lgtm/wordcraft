@@ -15,7 +15,7 @@ use crate::theme::{Tokens, regular, semibold};
 
 /// Points on screen per document point at 100% (96 px per inch, like a word processor).
 pub const PX_PER_PT: f32 = 96.0 / 72.0;
-const GAP: f32 = 18.0;
+pub const GAP: f32 = 18.0;
 const RULER: f32 = 22.0;
 
 /// Drag-select auto-scroll (#688): the pointer within this many points of the viewport's edge

@@ -1,0 +1,93 @@
+# Builds WordCraft for everyday use on phone, tablet and Mac:
+#   - web:   the browser version, published on GitHub Pages (iPhone, iPad, any browser;
+#            "Add to Home Screen" installs it like an app, see apps/wordcraft-web/manifest.webmanifest)
+#   - macos: WordCraft.app on a DMG (universal, ad-hoc signed), attached to the `app-latest` release
+#
+# One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+name: Apps
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: apps-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web (GitHub Pages)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rust toolchain + wasm target
+        run: rustup target add wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: web
+      - name: Install trunk
+        run: |
+          curl -fsSL https://github.com/trunk-rs/trunk/releases/download/v0.21.14/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C /usr/local/bin trunk
+          trunk --version
+      - name: Build
+        working-directory: apps/wordcraft-web
+        run: trunk build --release
+      - name: Pages extras
+        run: |
+          touch dist/web/.nojekyll
+          cp packaging/web/_headers dist/web/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/web
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  macos:
+    name: macOS app (DMG)
+    runs-on: macos-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rust targets
+        run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: macos
+      - name: Build and package
+        run: packaging/macos/package.sh --arch universal
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wordcraft-macos
+          path: dist/release/*.dmg
+      - name: Publish to the app-latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-latest
+          name: WordCraft (latest build)
+          prerelease: true
+          make_latest: false
+          body: |
+            Latest build of `main` (${{ github.sha }}).
+
+            **Mac:** download the `.dmg`, drag WordCraft to Applications. The app is not notarized,
+            so open it the first time with right-click → Open (or System Settings → Privacy & Security → Open Anyway).
+
+            **iPhone / iPad:** open https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ in Safari,
+            then Share → Add to Home Screen.
+          files: dist/release/wordcraft-*-macos-universal.dmg

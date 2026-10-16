@@ -1,6 +1,6 @@
 # UI parity with Microsoft Word
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** trivial (selection bar in the left margin, #856; previously trivial: table column and row markers on the rulers, #700; previously trivial: table borders and the resize handle drag on the page, #217; previously major: first version; ribbon, dialogs, shortcuts and on-canvas interaction measured from `crates/ui-egui` and the command registry) · **Target:** Microsoft Word (Microsoft 365) for Mac 16.113.4
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-15 · **Change:** trivial (phone layout below 600 pt wide: bigger controls, swipeable tabs, reflowed text; previously trivial: selection bar in the left margin, #856; previously trivial: table column and row markers on the rulers, #700; previously trivial: table borders and the resize handle drag on the page, #217; previously major: first version; ribbon, dialogs, shortcuts and on-canvas interaction measured from `crates/ui-egui` and the command registry) · **Target:** Microsoft Word (Microsoft 365) for Mac 16.113.4
 
 How WordCraft looks and feels next to Word: ribbon, dialogs, panes, keyboard, mouse and touch.
 Typing behaviour has its own checklist ([`typing-parity.md`](typing-parity.md)). All assets are our
@@ -130,3 +130,4 @@ buttons, the remaining labels start with zero and use the same number of digits 
 `01`, `02` on a ten-button toolbar; `001` through `011` on a twenty-button toolbar). This keeps
 labels unambiguous. Those extra-number assignments have not been compared with Word.
 | 2026-10-11 | trivial | Draw: Lasso, Add Pen gallery, Ink to Shape and Ink Replay (#395) |
+| 2026-10-15 | trivial | Phone layout in the web app: below 600 pt wide the interface is 20 % larger, the tab strip swipes, the title and status bars drop secondary controls, and the page opens in Web Layout reflowed to the screen. iPad and desktop widths are unchanged. |
